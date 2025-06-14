@@ -6,17 +6,17 @@ const services = [
   {
     icon: <Dna className="h-8 w-8 text-green-400" />,
     title: "Genetic Research",
-    description: "Cutting-edge research to understand and combat complex diseases through genomic analysis.",
+    description: "We employ next-generation sequencing to uncover the genetic basis of cancer, neurodegenerative disorders, and rare diseases.",
   },
   {
     icon: <TestTube className="h-8 w-8 text-green-400" />,
     title: "Gene Modification",
-    description: "Advanced gene editing and therapy development using CRISPR and other novel technologies.",
+    description: "Utilizing CRISPR-Cas9, we develop targeted gene therapies aimed at correcting genetic defects at their source for lasting cures.",
   },
   {
     icon: <DatabaseZap className="h-8 w-8 text-green-400" />,
     title: "Genomic Data Analysis",
-    description: "Powerful bio-informatics to translate raw genetic data into actionable insights and personalized medicine.",
+    description: "Our AI platform translates vast genomic datasets into clinically actionable insights for truly personalized medicine.",
   },
 ];
 

@@ -51,26 +51,45 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
     
     // Process the image with the segmentation model
     console.log('Processing with segmentation model...');
-    const result = await segmenter(imageData, { threshold: 0.6 });
+    const segmentationResult = await segmenter(imageData, { threshold: 0.5 });
     
-    console.log('Segmentation result:', result);
-    
-    const personMasks = result.filter(item => item.label === 'person' || item.label === 'wall' || item.label === 'ceiling' || item.label === 'sky' || item.label === 'floor' || item.label.includes('ground'));
+    console.log('Segmentation result:', segmentationResult);
 
-    if (!personMasks.length) {
-       console.warn("No person or key background elements detected, using all masks as foreground.");
+    if (!segmentationResult || segmentationResult.length === 0) {
+      throw new Error('Segmentation failed to produce a result.');
     }
-
-    const foregroundMask = personMasks.length > 0 ? personMasks[0].mask : result[0].mask;
     
-    if (!foregroundMask) {
+    // Define common background labels to be removed
+    const backgroundLabels = new Set(['wall', 'floor', 'ceiling', 'sky', 'ground', 'road', 'grass', 'water', 'building', 'sidewalk', 'sand']);
+    
+    const foregroundMasks = segmentationResult.filter(item => !backgroundLabels.has(item.label));
+
+    let finalMaskData;
+    const { width, height } = canvas;
+
+    if (foregroundMasks.length > 0) {
+        console.log('Found foreground masks:', foregroundMasks.map(m => m.label).join(', '));
+        const maskCanvas = foregroundMasks[0].mask;
+        finalMaskData = new Float32Array(maskCanvas.width * maskCanvas.height);
+        for (const mask of foregroundMasks) {
+            for (let i = 0; i < mask.mask.data.length; i++) {
+                finalMaskData[i] = Math.max(finalMaskData[i], mask.mask.data[i]);
+            }
+        }
+    } else {
+        console.warn("No specific foreground objects found. Using the most prominent detected object as foreground.");
+        // Fallback to using the single most prominent mask if no clear foreground is identified.
+        finalMaskData = segmentationResult[0].mask.data;
+    }
+    
+    if (!finalMaskData) {
       throw new Error('Invalid segmentation result: no mask found');
     }
     
     // Create a new canvas for the masked image
     const outputCanvas = document.createElement('canvas');
-    outputCanvas.width = canvas.width;
-    outputCanvas.height = canvas.height;
+    outputCanvas.width = width;
+    outputCanvas.height = height;
     const outputCtx = outputCanvas.getContext('2d');
     
     if (!outputCtx) throw new Error('Could not get output canvas context');
@@ -78,17 +97,13 @@ export const removeBackground = async (imageElement: HTMLImageElement): Promise<
     // Draw original image
     outputCtx.drawImage(canvas, 0, 0);
     
-    // Apply the mask
-    const outputImageData = outputCtx.getImageData(
-      0, 0,
-      outputCanvas.width,
-      outputCanvas.height
-    );
+    // Apply the combined mask
+    const outputImageData = outputCtx.getImageData(0, 0, width, height);
     const data = outputImageData.data;
     
-    for (let i = 0; i < foregroundMask.data.length; i++) {
+    for (let i = 0; i < finalMaskData.length; i++) {
         if (data[i * 4 + 3] !== 0) { // Only modify non-transparent pixels
-            const alpha = Math.round(foregroundMask.data[i] * 255);
+            const alpha = Math.round(finalMaskData[i] * 255);
             data[i * 4 + 3] = alpha;
         }
     }
