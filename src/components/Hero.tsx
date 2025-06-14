@@ -18,8 +18,8 @@ const Hero = () => {
             </p>
           </div>
           <div className="w-full max-w-sm mx-auto space-x-4">
-            <Button size="lg" className="bg-green-500 hover:bg-green-600 text-primary-foreground transition-transform hover:scale-105">
-              Discover Our Research
+            <Button size="lg" asChild className="bg-green-500 hover:bg-green-600 text-primary-foreground transition-transform hover:scale-105">
+              <a href="#discover">Discover Our Research</a>
             </Button>
           </div>
         </div>
