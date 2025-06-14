@@ -14,11 +14,11 @@ const Hero = () => {
               Pioneering the Future of Genomics
             </h1>
             <p className="max-w-[600px] mx-auto text-muted-foreground md:text-xl">
-              At Helix Dynamics, we unlock the secrets of life to build a healthier tomorrow.
+              At Kreem Genomics, we unlock the secrets of life to build a healthier tomorrow.
             </p>
           </div>
           <div className="w-full max-w-sm mx-auto space-x-4">
-            <Button size="lg" className="bg-green-500 hover:bg-green-600 text-primary-foreground">
+            <Button size="lg" className="bg-green-500 hover:bg-green-600 text-primary-foreground transition-transform hover:scale-105">
               Discover Our Research
             </Button>
           </div>

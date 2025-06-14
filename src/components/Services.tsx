@@ -34,7 +34,7 @@ const Services = () => {
         </div>
         <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
           {services.map((service) => (
-            <Card key={service.title} className="bg-secondary/50 border-border/50 hover:border-green-400/50 transition-colors">
+            <Card key={service.title} className="bg-secondary/50 border-border/50 hover:border-green-400/50 transition-all hover:-translate-y-2">
               <CardHeader className="flex flex-row items-center gap-4 pb-4">
                 {service.icon}
                 <CardTitle>{service.title}</CardTitle>
